@@ -5,10 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="293" Width="498">
+        Title="Saber Тестовое" Height="293" Width="498">
     <Grid>
-        <Label x:Name="label" Content="Данные не загружены" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30" Height="56" Width="488" FontWeight="Bold"/>
-        <ListView Margin="10,96,292,10" Name="ListView"></ListView>
-        <ListView Margin="292,96,10,10" Name="ListView2"></ListView>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="98*"/>
+            <ColumnDefinition Width="151*"/>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="label" Content="Данные не загружены" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30" Height="56" Width="488" FontWeight="Bold" Grid.ColumnSpan="2"/>
+        <ListView Margin="10,96,292,10" Name="ListView" x:FieldModifier="public" Grid.ColumnSpan="2"></ListView>
+        <ListView Margin="96,96,10,10" Name="ListView2" x:FieldModifier="public" Grid.Column="1"></ListView>
+        <Label x:Name="label1" Content="Десериализированные данные" Margin="12,61,279,162" Grid.ColumnSpan="2"/>
+        <Label x:Name="label1_Copy" Content="Данные для сериализации" Margin="105,61,-11,162" Grid.Column="1"/>
     </Grid>
 </Window>

@@ -1,10 +1,7 @@
-﻿using System.Windows;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Windows;
 
 
 namespace WpfApp1
@@ -12,7 +9,6 @@ namespace WpfApp1
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-
     class ListNode
     {
         public ListNode Prev;
@@ -39,7 +35,7 @@ namespace WpfApp1
                 arr.Add(temp);
                 temp = temp.Next;
             } while (temp != null);
-
+            
             //записываем файл; данные изменяем для хранения индекса узла .Random
             using (StreamWriter w = new StreamWriter(s))
                 foreach (ListNode n in arr)
@@ -83,7 +79,7 @@ namespace WpfApp1
                 {
                     n.Rand = arr[Convert.ToInt32(n.Data.Split(':')[1])];
                     n.Data = n.Data.Split(':')[0];
-                    
+
                 }
             }
             catch (Exception e)
@@ -97,11 +93,11 @@ namespace WpfApp1
     public partial class MainWindow : Window
     {
         static Random rand = new Random();
-
+        
         //создаём следующий ноуд
         static ListNode addNode(ListNode prev)
         {
-            ListNode result = new ();
+            ListNode result = new();
             result.Prev = prev;
             result.Next = null;
             result.Data = rand.Next(0, 100).ToString();
@@ -125,7 +121,7 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-
+            
             //счётчик нодов для тестирования
             int length = 7;
 
@@ -155,13 +151,33 @@ namespace WpfApp1
             first.Head = head;
             first.Tail = tail;
             first.Count = length;
-
-            
-            //СОздать\открыть файл и сериализировать лист
-            FileStream fs = new FileStream("saber.dat", FileMode.OpenOrCreate);
+            try
+            {
+                var lines = File.ReadLines("saber.dat");
+                foreach (var line in lines)
+                {
+                    ListView.Items.Add(line);
+                }
+            } catch( Exception e)
+            {
+                ListView.Items.Add("Данные не загружены");
+            }
+                //СОздать\открыть файл и сериализировать лист
+                FileStream fs = new FileStream("saber.dat", FileMode.OpenOrCreate);
             first.Serialize(fs);
-            
 
+            try
+            {
+                var lines = File.ReadLines("saber.dat");
+                foreach (var line in lines)
+                {
+                    ListView2.Items.Add(line);
+                }
+            }
+            catch (Exception e)
+            {
+                ListView.Items.Add("Данные не загружены");
+            }
             //Десериализировать во втором листе
             ListRand second = new ListRand();
             try
@@ -173,6 +189,7 @@ namespace WpfApp1
                 MessageBox.Show("Не удалось обработать файл данных, возможно, он поврежден, подробности:" + "\n" + e.Message + "\n" + "Можете перезагрузить приложение");
             }
             second.Deserialize(fs);
+
 
             //если данные второго хвоста равняются данным хвоста, то мы думаем что данные загружены верно
             if (second.Tail.Data == first.Tail.Data) label.Content = "Успешно загружены данные!";
