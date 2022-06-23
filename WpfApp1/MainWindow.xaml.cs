@@ -107,7 +107,7 @@ namespace WpfApp1
             return result;
         }
 
-        //создаём референс к следующему ноду 
+        //создаём отсылку к случайному ноду 
         static ListNode RandomNode(ListNode _head, int _length)
         {
             int k = rand.Next(0, _length);
@@ -132,7 +132,7 @@ namespace WpfApp1
             ListNode tail = new();
             ListNode temp = new();
 
-            head.Data = rand.Next(0, 1000).ToString();
+            head.Data = rand.Next(0, 1000).ToString(); // первый ноуд
 
             tail = head;
 
@@ -166,7 +166,7 @@ namespace WpfApp1
             {
                 ListView.Items.Add("Данные не загружены");
             }
-                //СОздать\открыть файл и сериализировать лист
+                //Создать либо открыть файл и сериализировать лист
                 FileStream fs = new("saber.dat", FileMode.OpenOrCreate);
             first.Serialize(fs);
 
