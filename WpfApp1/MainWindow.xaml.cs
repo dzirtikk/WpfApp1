@@ -25,8 +25,8 @@ namespace WpfApp1
 
         public void Serialize(FileStream s)
         {
-            List<ListNode> arr = new List<ListNode>();
-            ListNode temp = new ListNode();
+            List<ListNode> arr = new();
+            ListNode temp = new();
             temp = Head;
 
             //переводим ноды в лист
@@ -35,17 +35,17 @@ namespace WpfApp1
                 arr.Add(temp);
                 temp = temp.Next;
             } while (temp != null);
-            
-            //записываем файл; данные изменяем для хранения индекса узла .Random
-            using (StreamWriter w = new StreamWriter(s))
-                foreach (ListNode n in arr)
-                    w.WriteLine(n.Data.ToString() + ":" + arr.IndexOf(n.Rand).ToString());
+
+            //записываем в файл; а также добавляем данные для хранения индекса узла .Random
+            using StreamWriter w = new(s);
+            foreach (ListNode n in arr)
+                w.WriteLine(n.Data.ToString() + ":" + arr.IndexOf(n.Rand).ToString());
         }
 
         public void Deserialize(FileStream s)
         {
-            List<ListNode> arr = new List<ListNode>();
-            ListNode temp = new ListNode();
+            List<ListNode> arr = new();
+            ListNode temp = new();
             Count = 0;
             Head = temp;
             string line;
@@ -53,7 +53,7 @@ namespace WpfApp1
             //пробуем создать файл и создать лист состоящий из нодов
             try
             {
-                using (StreamReader sr = new StreamReader(s))
+                using (StreamReader sr = new(s))
                 {
                     while ((line = sr.ReadLine()) != null)
                     {
@@ -61,7 +61,7 @@ namespace WpfApp1
                         {
                             Count++;
                             temp.Data = line;
-                            ListNode next = new ListNode();
+                            ListNode next = new();
                             temp.Next = next;
                             arr.Add(temp);
                             next.Prev = temp;
@@ -92,21 +92,23 @@ namespace WpfApp1
 
     public partial class MainWindow : Window
     {
-        static Random rand = new Random();
+        static Random rand = new();
         
         //создаём следующий ноуд
-        static ListNode addNode(ListNode prev)
+        static ListNode AddNode(ListNode prev)
         {
-            ListNode result = new();
-            result.Prev = prev;
-            result.Next = null;
-            result.Data = rand.Next(0, 100).ToString();
+            ListNode result = new()
+            {
+                Prev = prev,
+                Next = null,
+                Data = rand.Next(0, 100).ToString()
+            };
             prev.Next = result;
             return result;
         }
 
         //создаём референс к следующему ноду 
-        static ListNode randomNode(ListNode _head, int _length)
+        static ListNode RandomNode(ListNode _head, int _length)
         {
             int k = rand.Next(0, _length);
             int i = 0;
@@ -126,31 +128,33 @@ namespace WpfApp1
             int length = 7;
 
             //первый нод
-            ListNode head = new ListNode();
-            ListNode tail = new ListNode();
-            ListNode temp = new ListNode();
+            ListNode head = new();
+            ListNode tail = new();
+            ListNode temp = new();
 
             head.Data = rand.Next(0, 1000).ToString();
 
             tail = head;
 
             for (int i = 1; i < length; i++)
-                tail = addNode(tail);
+                tail = AddNode(tail);
 
             temp = head;
 
             //добавить отсылку к случайному ноду
             for (int i = 0; i < length; i++)
             {
-                temp.Rand = randomNode(head, length);
+                temp.Rand = RandomNode(head, length);
                 temp = temp.Next;
             }
 
             //Объявить первый лист
-            ListRand first = new ListRand();
-            first.Head = head;
-            first.Tail = tail;
-            first.Count = length;
+            ListRand first = new()
+            {
+                Head = head,
+                Tail = tail,
+                Count = length
+            };
             try
             {
                 var lines = File.ReadLines("saber.dat");
@@ -158,12 +162,12 @@ namespace WpfApp1
                 {
                     ListView.Items.Add(line);
                 }
-            } catch( Exception e)
+            } catch
             {
                 ListView.Items.Add("Данные не загружены");
             }
                 //СОздать\открыть файл и сериализировать лист
-                FileStream fs = new FileStream("saber.dat", FileMode.OpenOrCreate);
+                FileStream fs = new("saber.dat", FileMode.OpenOrCreate);
             first.Serialize(fs);
 
             try
@@ -174,12 +178,12 @@ namespace WpfApp1
                     ListView2.Items.Add(line);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 ListView.Items.Add("Данные не загружены");
             }
             //Десериализировать во втором листе
-            ListRand second = new ListRand();
+            ListRand second = new();
             try
             {
                 fs = new FileStream("saber.dat", FileMode.Open);
