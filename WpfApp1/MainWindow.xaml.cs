@@ -27,6 +27,7 @@ namespace WpfApp1
         {
             List<ListNode> arr = new();
             ListNode temp = new();
+
             temp = Head;
 
             //переводим ноды в лист
@@ -42,14 +43,14 @@ namespace WpfApp1
                 w.WriteLine(n.Data.ToString() + ":" + arr.IndexOf(n.Rand).ToString());
         }
 
-        public void Deserialize(FileStream s)
+        public void Deserialize(FileStream s, int counter)
         {
             List<ListNode> arr = new();
             ListNode temp = new();
             Count = 0;
             Head = temp;
             string line;
-
+            List<String> show = new();
             //пробуем создать файл и создать лист состоящий из нодов
             try
             {
@@ -73,19 +74,25 @@ namespace WpfApp1
                 //объявляем хвост для листа
                 Tail = temp.Prev;
                 Tail.Next = null;
-
+                int i = 0;
                 //возвращаем референсы к случайным нодам и восстанавливаем данные
                 foreach (ListNode n in arr)
                 {
-                    n.Rand = arr[Convert.ToInt32(n.Data.Split(':')[1])];
-                    n.Data = n.Data.Split(':')[0];
-
+                    if (i < counter)
+                    {
+                        n.Rand = arr[Convert.ToInt32(n.Data.Split(':')[1])];
+                        n.Data = n.Data.Split(':')[0];
+                        i++;
+                        show.Add(n.Data.Split(':')[0]);
+                    }
                 }
+                MessageBox.Show("Ваши десериализированные данные"+"\n"+String.Join("\n", show));
             }
             catch (Exception e)
             {
                 MessageBox.Show("Не удалось обработать файл данных, возможно, он поврежден, подробности:" + "\n" + e.Message + "\n" + "Можете перезагрузить приложение");
             }
+
         }
     }
 
@@ -93,15 +100,21 @@ namespace WpfApp1
     public partial class MainWindow : Window
     {
         static Random rand = new();
-        
+
+        ListNode head = new();
+        ListNode tail = new();
+        ListNode temp = new();
+
+        FileStream fs = new("saber.dat", FileMode.OpenOrCreate);
+
         //создаём следующий ноуд
-        static ListNode AddNode(ListNode prev)
+        static ListNode AddNode(ListNode prev,int counting, string ListData)
         {
             ListNode result = new()
             {
                 Prev = prev,
                 Next = null,
-                Data = rand.Next(0, 100).ToString()
+                Data = ListData 
             };
             prev.Next = result;
             return result;
@@ -123,28 +136,52 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-            
-            //счётчик нодов для тестирования
-            int length = 7;
+
 
             //первый нод
-            ListNode head = new();
-            ListNode tail = new();
-            ListNode temp = new();
+            button1_Copy.Visibility = Visibility.Hidden;
 
-            head.Data = rand.Next(0, 1000).ToString(); // первый ноуд
+            
 
             tail = head;
 
-            for (int i = 1; i < length; i++)
-                tail = AddNode(tail);
+            //try
+            //{
+            //    var lines = File.ReadLines("saber.dat");
+            //    foreach (string line in lines)
+            //    {
+            //        ListView2.Items.Add(line);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    ListView2.Items.Add("Данные не загружены" + ex);
+            //}
+            //если данные второго хвоста равняются данным хвоста, то мы думаем что данные загружены верно
+            //if (second.Tail.Data == first.Tail.Data) label.Content = "Успешно загружены данные!";
 
+        }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            ListView.Items.Add(textBox.Text);
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            head.Data = ListView.Items.GetItemAt(0).ToString(); // первый ноуд 
+            List<string> test = new(); //лист для перевода текста из listview
+            for (int i = 0; i < ListView.Items.Count; i++)
+            {
+                test.Add(item: ListView.Items.GetItemAt(i).ToString());
+                tail = AddNode(tail, i, test[i]);
+            }
             temp = head;
 
             //добавить отсылку к случайному ноду
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < ListView.Items.Count; i++)
             {
-                temp.Rand = RandomNode(head, length);
+                temp.Rand = RandomNode(head, ListView.Items.Count);
                 temp = temp.Next;
             }
 
@@ -153,52 +190,32 @@ namespace WpfApp1
             {
                 Head = head,
                 Tail = tail,
-                Count = length
+                Count = ListView.Items.Count
             };
-            try
-            {
-                var lines = File.ReadLines("saber.dat");
-                foreach (var line in lines)
-                {
-                    ListView.Items.Add(line);
-                }
-            } catch
-            {
-                ListView.Items.Add("Данные не загружены");
-            }
-                //Создать либо открыть файл и сериализировать лист
-                FileStream fs = new("saber.dat", FileMode.OpenOrCreate);
-            first.Serialize(fs);
+            //Создать либо открыть файл и сериализировать лист
 
-            try
-            {
-                var lines = File.ReadLines("saber.dat");
-                foreach (var line in lines)
-                {
-                    ListView2.Items.Add(line);
-                }
-            }
-            catch
-            {
-                ListView.Items.Add("Данные не загружены");
-            }
+            first.Serialize(fs);
+            MessageBox.Show("Данные сериализированны");
+            button1.Visibility = Visibility.Hidden;
+            button1_Copy.Visibility = Visibility.Visible;
+
+            // fs.Close();
+        }
+
+        private void button1_Copy_Click(object sender, RoutedEventArgs e)
+        {
             //Десериализировать во втором листе
             ListRand second = new();
             try
             {
                 fs = new FileStream("saber.dat", FileMode.Open);
             }
-            catch (Exception e)
+            catch (Exception ee)
             {
-                MessageBox.Show("Не удалось обработать файл данных, возможно, он поврежден, подробности:" + "\n" + e.Message + "\n" + "Можете перезагрузить приложение");
+                MessageBox.Show("Не удалось обработать файл данных, возможно, он поврежден, подробности:" + "\n" + ee.Message + "\n" + "Можете перезагрузить приложение");
             }
-            second.Deserialize(fs);
-
-
-            //если данные второго хвоста равняются данным хвоста, то мы думаем что данные загружены верно
-            if (second.Tail.Data == first.Tail.Data) label.Content = "Успешно загружены данные!";
-            Console.Read();
-
+            second.Deserialize(fs, ListView.Items.Count);
+            //fs.Close();
         }
     }
 }

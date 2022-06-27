@@ -5,16 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="Saber Тестовое" Height="293" Width="498">
-    <Grid>
+        Title="Saber Тестовое" Height="371" Width="537">
+    <Grid Width="540">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="98*"/>
-            <ColumnDefinition Width="151*"/>
+            <ColumnDefinition Width="157*"/>
+            <ColumnDefinition Width="113*"/>
         </Grid.ColumnDefinitions>
-        <Label x:Name="label" Content="Данные не загружены" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="30" Height="56" Width="488" FontWeight="Bold" Grid.ColumnSpan="2"/>
-        <ListView Margin="10,96,292,10" Name="ListView" x:FieldModifier="public" Grid.ColumnSpan="2"></ListView>
-        <ListView Margin="96,96,10,10" Name="ListView2" x:FieldModifier="public" Grid.Column="1"></ListView>
-        <Label x:Name="label1" Content="Десериализированные данные" Margin="12,61,279,162" Grid.ColumnSpan="2"/>
-        <Label x:Name="label1_Copy" Content="Данные для сериализации" Margin="105,61,-11,162" Grid.Column="1"/>
+
+        <ListView Margin="10,171,107,10" Name="ListView" x:FieldModifier="public" SelectedIndex="0" Grid.ColumnSpan="2"/>
+        <Label x:Name="label1" Content="Данные для сериализации" Margin="10,133,2,189" RenderTransformOrigin="0.51,1.37"/>
+        <TextBox x:Name="textBox" TextWrapping="Wrap" Margin="43,40,0,0" HorizontalAlignment="Left" Width="302" Grid.ColumnSpan="2" Height="31" VerticalAlignment="Top"/>
+        <Label x:Name="label2" Content="Введите данные ниже что бы добавить их для сериализации" Margin="0,8,119,0" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" Width="378"/>
+        <Button x:Name="button" Content="Добавить" Margin="10,85,0,0" Click="button_Click" HorizontalAlignment="Left" Width="90" Height="32" VerticalAlignment="Top"/>
+        <Button x:Name="button1" Content="Сериализация" Margin="0,85,16,0" FontSize="8" Click="button1_Click" HorizontalAlignment="Right" Width="102" Height="32" VerticalAlignment="Top"/>
+        <Button x:Name="button1_Copy" Content="Десериализация" Margin="66,87,0,0" FontSize="8" Click="button1_Copy_Click" HorizontalAlignment="Left" Width="98" Grid.Column="1" Height="32" VerticalAlignment="Top"/>
     </Grid>
 </Window>
